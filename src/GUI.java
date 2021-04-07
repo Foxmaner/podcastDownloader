@@ -1,4 +1,6 @@
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -7,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-public class GUI {
+public class GUI  implements ActionListener{
 	
 	//Deklarera frame
 	JFrame frame;
@@ -35,7 +37,7 @@ public class GUI {
 	JTextArea consoleStatusTextArea;
 	
 	
-	public GUI() {
+	public GUI(){
 		//
 		//Skapa frame och layout
 		//
@@ -52,6 +54,8 @@ public class GUI {
 		linkInstructionLabel = new JLabel("Skriv in länken till RSS filen");
 		inputLinkField = new JTextField();
 		fetchProgramButton = new JButton("Hämta program (Ej ladda ner)");
+		
+		fetchProgramButton.addActionListener(this);
 		
 		
 		linkSelectPanel.add(linkInstructionLabel);	
@@ -80,6 +84,8 @@ public class GUI {
 		downloadLocationInstructionLabel = new JLabel("Välj plats för nerladdning");
 		downloadLocationkField = new JTextField();
 		downloadProgramButton = new JButton("Ladda ner valda program");
+		
+		downloadProgramButton.addActionListener(this);
 		
 		
 		downloadSelectPanel.add(downloadLocationInstructionLabel);	
@@ -122,6 +128,16 @@ public class GUI {
 		
 		
 		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getSource() == fetchProgramButton) {
+			fetchedProgramsTextArea.append("Fetch");
+		}else if(e.getSource() == downloadProgramButton){
+			fetchedProgramsTextArea.append("Download");
+		}
 	}
 
 }
