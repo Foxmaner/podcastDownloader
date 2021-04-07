@@ -1,8 +1,6 @@
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,13 +11,16 @@ public class GUI {
 	
 	public GUI() {
 		
+		//
 		//Skapa frame och layout
+		//
 		JFrame frame = new JFrame();
 		frame.setLayout(new GridLayout(4,1));
 		
 		
-		
+		//
 		//Skapa panel för att skriva in länkar
+		//
 		JPanel linkSelectPanel = new JPanel();
 		linkSelectPanel.setLayout(new GridLayout(3,1));
 		
@@ -33,8 +34,9 @@ public class GUI {
 		linkSelectPanel.add(fetchProgramButton);
 		
 		
-		
+		//
 		//Skapa panel för att se och välja program
+		//
 		JPanel programSelectPanel = new JPanel();
 		programSelectPanel.setLayout(new GridLayout(1,2));
 		
@@ -44,9 +46,10 @@ public class GUI {
 		programSelectPanel.add(fetchedProgramsTextArea);
 		programSelectPanel.add(selectedProgramsTextArea);
 		
+		//
 		//Skapa panel för att välja nerladdningsplats
+		//
 		JPanel downloadSelectPanel = new JPanel();
-		
 		downloadSelectPanel.setLayout(new GridLayout(3,1));
 		
 		JLabel downloadLocationInstructionLabel = new JLabel("Välj plats för nerladdning");
@@ -58,11 +61,20 @@ public class GUI {
 		downloadSelectPanel.add(downloadLocationkField);	
 		downloadSelectPanel.add(downloadProgramButton);
 		
+		//
 		//Skapa panel för konsol/status
+		//
 		JPanel consolePanel = new JPanel();
+		consolePanel.setLayout(new GridLayout(1,1));
+		
+		JTextArea consoleStatusTextArea = new JTextArea("DDD");
+		
+		consolePanel.add(consoleStatusTextArea);
 		
 
-		
+		//
+		//Lägger till alla paneler i framen
+		//
 		frame.add(linkSelectPanel);
 		frame.add(programSelectPanel);
 		frame.add(downloadSelectPanel);
@@ -70,7 +82,9 @@ public class GUI {
 		
 		
 		
-		
+		//
+		//Ballt
+		//
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Podcast Downloader!");
 		frame.pack();
@@ -80,6 +94,8 @@ public class GUI {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new GUI();
+		
+		
 		
 	}
 
