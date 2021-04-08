@@ -2,6 +2,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -77,8 +78,12 @@ public class GUI  implements ActionListener{
 		programSelectPanel = new JPanel();
 		programSelectPanel.setLayout(new GridLayout(1,2));
 		
+		
+		
 		fetchedProgramsTextArea = new JTextArea();
 		selectedProgramsTextArea = new JTextArea();
+		
+		
 		
 		programSelectPanel.add(fetchedProgramsTextArea);
 		programSelectPanel.add(selectedProgramsTextArea);
@@ -130,7 +135,7 @@ public class GUI  implements ActionListener{
 		frame.setVisible(true);
 		
 		//testReadFirstPodcastName();
-		loadAllPodcasts();
+		
 	}
 		
 	
@@ -138,9 +143,9 @@ public class GUI  implements ActionListener{
 	private ArrayList<XMLPodcast> podcastList = new ArrayList<XMLPodcast>();
 	
 	public void setUpDocument() {
-		
+		String url = inputLinkField.getText();
 		try {
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("tomochpetter.xml");
+		InputStream inputStream = new URL(url).openStream();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		document = builder.parse(inputStream);
@@ -165,7 +170,7 @@ public class GUI  implements ActionListener{
 		System.out.println("testReadFirstPodcastName()= : " + title.getTextContent());
 	}
 	
-	public void loadAllPodcasts() {
+	public void fetchAllPodcasts() {
 		setUpDocument();
 		
 		NodeList items = document.getElementsByTagName("item");
@@ -188,11 +193,22 @@ public class GUI  implements ActionListener{
 		XMLPodcast newPodcast = new XMLPodcast(title.getTextContent(), description.getTextContent(), url.getTextContent());
 		podcastList.add(newPodcast);
 		
+		
 		//System.out.println("Title= : " + title.getTextContent());
 		//System.out.println("Desc= : " + description.getTextContent());
 		//System.out.println("URL= : " + url.getTextContent());
 		}
-		System.out.println(podcastList.get(3).toString());
+		//System.out.println(podcastList.get(3).toString());
+		displayAllPodcasts(nrOfItems);
+	}
+	
+	
+	public void displayAllPodcasts(int nrOfItems) {
+		for(int i = 0; i<nrOfItems; i++) {
+			fetchedProgramsTextArea.append(podcastList.get(i).title + "\n");
+			
+		}
+		
 	}
 	
 	
@@ -211,7 +227,7 @@ public class GUI  implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == fetchProgramButton) {
-			fetchedProgramsTextArea.append("Fetch");
+			fetchAllPodcasts();
 		}else if(e.getSource() == downloadProgramButton){
 			fetchedProgramsTextArea.append("Download");
 		}
