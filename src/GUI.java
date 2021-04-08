@@ -2,6 +2,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -134,7 +135,7 @@ public class GUI  implements ActionListener{
 		
 	
 	private Document document;
-	private XMLPodcast[] podcastList;
+	private ArrayList<XMLPodcast> podcastList = new ArrayList<XMLPodcast>();
 	
 	public void setUpDocument() {
 		
@@ -174,11 +175,24 @@ public class GUI  implements ActionListener{
 		for(int i = 0; i<nrOfItems; i++) {
 		
 		Element firstItem = (Element)items.item(i);
+		
 		NodeList titles = firstItem.getElementsByTagName("title");
 		Element title = (Element)titles.item(0);
 		
-		System.out.println("testReadFirstPodcastName()= : " + title.getTextContent());
+		NodeList descriptions = firstItem.getElementsByTagName("description");
+		Element description = (Element)descriptions.item(0);
+		
+		NodeList urls = firstItem.getElementsByTagName("link");
+		Element url = (Element)urls.item(0);
+		
+		XMLPodcast newPodcast = new XMLPodcast(title.getTextContent(), description.getTextContent(), url.getTextContent());
+		podcastList.add(newPodcast);
+		
+		//System.out.println("Title= : " + title.getTextContent());
+		//System.out.println("Desc= : " + description.getTextContent());
+		//System.out.println("URL= : " + url.getTextContent());
 		}
+		System.out.println(podcastList.get(3).toString());
 	}
 	
 	
