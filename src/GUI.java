@@ -128,11 +128,13 @@ public class GUI  implements ActionListener{
 		frame.pack();
 		frame.setVisible(true);
 		
-		testReadFirstPodcastName();
+		//testReadFirstPodcastName();
+		loadAllPodcasts();
 	}
 		
 	
 	private Document document;
+	private XMLPodcast[] podcastList;
 	
 	public void setUpDocument() {
 		
@@ -160,6 +162,23 @@ public class GUI  implements ActionListener{
 		Element title = (Element)titles.item(0);
 		
 		System.out.println("testReadFirstPodcastName()= : " + title.getTextContent());
+	}
+	
+	public void loadAllPodcasts() {
+		setUpDocument();
+		
+		NodeList items = document.getElementsByTagName("item");
+		int nrOfItems = items.getLength();
+		System.out.println(nrOfItems);
+		
+		for(int i = 0; i<nrOfItems; i++) {
+		
+		Element firstItem = (Element)items.item(i);
+		NodeList titles = firstItem.getElementsByTagName("title");
+		Element title = (Element)titles.item(0);
+		
+		System.out.println("testReadFirstPodcastName()= : " + title.getTextContent());
+		}
 	}
 	
 	
