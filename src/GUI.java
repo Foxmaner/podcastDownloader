@@ -1,4 +1,9 @@
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -6,8 +11,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-public class GUI {
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+public class GUI  implements ActionListener{
 	
 	//Deklarera frame
 	JFrame frame;
@@ -35,7 +46,7 @@ public class GUI {
 	JTextArea consoleStatusTextArea;
 	
 	
-	public GUI() {
+	public GUI(){
 		//
 		//Skapa frame och layout
 		//
@@ -53,6 +64,8 @@ public class GUI {
 		inputLinkField = new JTextField();
 		fetchProgramButton = new JButton("Hämta program (Ej ladda ner)");
 		
+		fetchProgramButton.addActionListener(this);
+		
 		
 		linkSelectPanel.add(linkInstructionLabel);	
 		linkSelectPanel.add(inputLinkField);	
@@ -65,8 +78,12 @@ public class GUI {
 		programSelectPanel = new JPanel();
 		programSelectPanel.setLayout(new GridLayout(1,2));
 		
+		
+		
 		fetchedProgramsTextArea = new JTextArea();
 		selectedProgramsTextArea = new JTextArea();
+		
+		
 		
 		programSelectPanel.add(fetchedProgramsTextArea);
 		programSelectPanel.add(selectedProgramsTextArea);
@@ -81,6 +98,8 @@ public class GUI {
 		downloadLocationkField = new JTextField();
 		downloadProgramButton = new JButton("Ladda ner valda program");
 		
+		downloadProgramButton.addActionListener(this);
+		
 		
 		downloadSelectPanel.add(downloadLocationInstructionLabel);	
 		downloadSelectPanel.add(downloadLocationkField);	
@@ -92,7 +111,7 @@ public class GUI {
 		consolePanel = new JPanel();
 		consolePanel.setLayout(new GridLayout(1,1));
 		
-		consoleStatusTextArea = new JTextArea("DDD");
+		consoleStatusTextArea = new JTextArea();
 		
 		consolePanel.add(consoleStatusTextArea);
 		
@@ -114,14 +133,104 @@ public class GUI {
 		frame.setTitle("Podcast Downloader!");
 		frame.pack();
 		frame.setVisible(true);
+		
+		//testReadFirstPodcastName();
+		
 	}
+		
+	
+	private Document document;
+	private ArrayList<XMLPodcast> podcastList = new ArrayList<XMLPodcast>();
+	
+	public void setUpDocument() {
+		String url = inputLinkField.getText();
+		try {
+		InputStream inputStream = new URL(url).openStream();
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		document = builder.parse(inputStream);
+		
 
+		}catch(Exception e) {
+			System.out.println("Error: " + e);
+		}
+		
+	}
+	
+	public void testReadFirstPodcastName() {
+		setUpDocument();
+		
+		
+		
+		NodeList items = document.getElementsByTagName("item");
+		Element firstItem = (Element)items.item(0);
+		NodeList titles = firstItem.getElementsByTagName("title");
+		Element title = (Element)titles.item(0);
+		
+		System.out.println("testReadFirstPodcastName()= : " + title.getTextContent());
+	}
+	
+	public void fetchAllPodcasts() {
+		setUpDocument();
+		
+		NodeList items = document.getElementsByTagName("item");
+		int nrOfItems = items.getLength();
+		System.out.println(nrOfItems);
+		
+		for(int i = 0; i<nrOfItems; i++) {
+		
+		Element firstItem = (Element)items.item(i);
+		
+		NodeList titles = firstItem.getElementsByTagName("title");
+		Element title = (Element)titles.item(0);
+		
+		NodeList descriptions = firstItem.getElementsByTagName("description");
+		Element description = (Element)descriptions.item(0);
+		
+		NodeList urls = firstItem.getElementsByTagName("link");
+		Element url = (Element)urls.item(0);
+		
+		XMLPodcast newPodcast = new XMLPodcast(title.getTextContent(), description.getTextContent(), url.getTextContent());
+		podcastList.add(newPodcast);
+		
+		
+		//System.out.println("Title= : " + title.getTextContent());
+		//System.out.println("Desc= : " + description.getTextContent());
+		//System.out.println("URL= : " + url.getTextContent());
+		}
+		//System.out.println(podcastList.get(3).toString());
+		displayAllPodcasts(nrOfItems);
+	}
+	
+	
+	public void displayAllPodcasts(int nrOfItems) {
+		for(int i = 0; i<nrOfItems; i++) {
+			fetchedProgramsTextArea.append(podcastList.get(i).title + "\n");
+			
+		}
+		
+	}
+	
+	
+	
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new GUI();
 		
 		
 		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getSource() == fetchProgramButton) {
+			fetchAllPodcasts();
+		}else if(e.getSource() == downloadProgramButton){
+			fetchedProgramsTextArea.append("Download");
+		}
 	}
 
 }
