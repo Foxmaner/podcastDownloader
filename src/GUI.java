@@ -1,6 +1,7 @@
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -8,6 +9,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class GUI  implements ActionListener{
 	
@@ -98,7 +105,7 @@ public class GUI  implements ActionListener{
 		consolePanel = new JPanel();
 		consolePanel.setLayout(new GridLayout(1,1));
 		
-		consoleStatusTextArea = new JTextArea("DDD");
+		consoleStatusTextArea = new JTextArea();
 		
 		consolePanel.add(consoleStatusTextArea);
 		
@@ -120,8 +127,45 @@ public class GUI  implements ActionListener{
 		frame.setTitle("Podcast Downloader!");
 		frame.pack();
 		frame.setVisible(true);
+		
+		testReadFirstPodcastName();
 	}
+		
+	
+	private Document document;
+	
+	public void setUpDocument() {
+		
+		try {
+		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("tomochpetter.xml");
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		document = builder.parse(inputStream);
+		
 
+		}catch(Exception e) {
+			System.out.println("Error: " + e);
+		}
+		
+	}
+	
+	public void testReadFirstPodcastName() {
+		setUpDocument();
+		
+		
+		
+		NodeList items = document.getElementsByTagName("item");
+		Element firstItem = (Element)items.item(0);
+		NodeList titles = firstItem.getElementsByTagName("title");
+		Element title = (Element)titles.item(0);
+		
+		System.out.println("testReadFirstPodcastName()= : " + title.getTextContent());
+	}
+	
+	
+	
+	
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new GUI();
