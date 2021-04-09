@@ -1,8 +1,12 @@
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -211,6 +215,25 @@ public class GUI  implements ActionListener{
 		
 	}
 	
+	public void downloadSelectedPrograms() {
+	    
+		try {
+		URLConnection conn = new URL("https://sphinx.acast.com/tomochpetter/217.jagvillhadig-jagvillklammadinafinnar/media.mp3").openConnection();
+	    InputStream is = conn.getInputStream();
+
+	    OutputStream outstream = new FileOutputStream(new File("C:/Users/eskil/Downloads/file.mp3"));
+	    byte[] buffer = new byte[4096];
+	    int len;
+	    while ((len = is.read(buffer)) > 0) {
+	        outstream.write(buffer, 0, len);
+	    }
+	    outstream.close();
+		}catch(Exception e){
+			System.out.println("Error:" + e);
+		}
+		
+	}
+	
 	
 	
 	
@@ -229,7 +252,7 @@ public class GUI  implements ActionListener{
 		if (e.getSource() == fetchProgramButton) {
 			fetchAllPodcasts();
 		}else if(e.getSource() == downloadProgramButton){
-			fetchedProgramsTextArea.append("Download");
+			downloadSelectedPrograms();
 		}
 	}
 
